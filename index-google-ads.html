@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz: Descubra como lucrar com Google Ads</title>
+<meta name="description" content="Descubra seu perfil e o caminho para transformar o Google em uma máquina de vendas.">
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root{
+    --orange:#4285F4;      
+    --green:#34A853;       
+    --black:#111111;
+    --cream:#f5f8ff;       
+    --yellow:#FBBC05;
+    --red:#EA4335;
+  }
+  *{box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  html,body,#root{min-height:100%;margin:0}
+  body{background:var(--cream);font-family:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;color:#222;}
+
+  .app-shell{min-height:100vh;display:flex;justify-content:center;overflow-x:clip}
+  .app-card{width:100%;max-width:440px;min-height:100vh;background:var(--cream);position:relative;display:flex;flex-direction:column;border-left:1px solid rgba(0,0,0,.06);border-right:1px solid rgba(0,0,0,.06);box-shadow:0 0 80px rgba(0,0,0,.06);overflow-x:clip}
+
+  /* Barra de progresso */
+  .progress-bar{position:sticky;top:0;z-index:30;width:100%;background:rgba(245,248,255,.9);backdrop-filter:blur(24px);border-bottom:1px solid rgba(0,0,0,.06)}
+  .progress-track{height:8px;width:100%;background:rgba(0,0,0,.06);overflow:hidden}
+  .progress-fill{height:100%;background:var(--orange);transition:width .7s ease-out;border-top-right-radius:9999px;border-bottom-right-radius:9999px}
+  .progress-meta{display:flex;justify-content:space-between;align-items:center;padding:10px 24px}
+  .progress-label{font-size:10px;font-weight:900;letter-spacing:.18em;color:rgba(0,0,0,.5);text-transform:uppercase}
+  .progress-pct{font-size:10px;font-weight:700;color:rgba(0,0,0,.4);font-variant-numeric:tabular-nums}
+
+  /* HERO PROSPECTIVO CORRIGIDO */
+  .hero-section{
+    position:relative;
+    background-image:url('https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=800&auto=format&fit=crop'); 
+    background-size:cover;
+    background-position:center;
+    padding:40px 24px 32px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+  .hero-overlay{
+    position:absolute;
+    inset:0;
+    /* Fundo mais escuro no topo para destacar a letra */
+    background:linear-gradient(to bottom, rgba(10,10,15,0.85) 0%, rgba(10,10,15,0.7) 40%, rgba(10,10,15,0.95) 100%);
+    z-index:1;
+  }
+  .hero-content{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+
+  /* TIPOGRAFIA CORRIGIDA: Inter em vez de Anton */
+  .hero-title{
+    font-family:'Inter', sans-serif;
+    font-weight:900;
+    text-transform:uppercase;
+    line-height:1.15; /* Respiro entre as linhas */
+    letter-spacing:-0.03em;
+    margin:0 0 20px 0;
+    color:#fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+  .hero-title .line1{font-size:clamp(30px,8vw,42px); display:block;}
+  .hero-title .line2{font-size:clamp(32px,9vw,48px); display:block; margin-top:8px; color:var(--orange); text-shadow: none;}
+  
+  .hero-card{margin-top:10px;background:rgba(255,255,255,0.98);border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:18px;border-left:5px solid var(--orange);box-shadow:0 10px 30px rgba(0,0,0,.2)}
+  .hero-card p{margin:0;font-size:16px;line-height:1.45;font-weight:600;color:#222}
+  .hl-orange{background:var(--orange);color:#fff;padding:2px 6px;border-radius:6px;font-weight:900}
+  .hl-underline{text-decoration:underline;text-decoration-color:var(--green);text-decoration-thickness:3px;text-underline-offset:4px;font-weight:700}
+  
+  .benefits{margin-top:24px;display:grid;grid-template-columns:1fr;gap:12px}
+  .benefit{display:flex;gap:12px;align-items:center;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.06);padding:14px;box-shadow:0 4px 15px rgba(0,0,0,.05)}
+  .benefit-check{width:36px;height:36px;border-radius:9999px;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:900;font-size:16px;flex-shrink:0}
+  .benefit-text{font-size:14px;line-height:1.35;font-weight:600;color:#111;margin:0}
+
+  .btn-primary{margin-top:32px;width:100%;background:var(--green);color:#fff;font-weight:900;font-size:16px;letter-spacing:.03em;padding:20px;border-radius:16px;border:none;text-transform:uppercase;box-shadow:0 12px 28px rgba(52,168,83,.4);cursor:pointer;transition:all .15s;}
+  .btn-primary:active{transform:translateY(2px);box-shadow:0 4px 12px rgba(52,168,83,.3)}
+
+  .pulse-row{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .dot-green{width:8px;height:8px;background:#10b981;border-radius:9999px;animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
+  .pulse-text{font-size:11px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.7);text-transform:uppercase;margin:0}
+
+  /* Perguntas */
+  .q-wrap{flex:1;padding:28px 20px 40px;display:flex;flex-direction:column;animation:slideUp .35s ease}
+  .q-meta{display:flex;align-items:center;gap:10px}
+  .q-badge{background:#000;color:#fff;font-size:11px;font-weight:900;letter-spacing:.1em;padding:4px 12px;border-radius:9999px}
+  .q-topic{font-size:11px;font-weight:700;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:.1em}
+  .q-title{font-family:'Inter',sans-serif; font-weight:900; font-size:26px;line-height:1.15;color:#111;text-transform:uppercase;margin:16px 0 0; letter-spacing:-0.02em;}
+  .q-subtitle{margin-top:12px;font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);background:rgba(66,133,244,.1);border:1px solid rgba(66,133,244,.15);display:inline-flex;padding:4px 10px;border-radius:9999px;width:fit-content}
+  .q-options{margin-top:28px;display:flex;flex-direction:column;gap:12px}
+  .q-option{text-align:left;width:100%;padding:16px;border-radius:16px;border:1.5px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:14px;background:#fff;cursor:pointer;transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,.04);font-family:inherit;}
+  .q-option:hover{border-color:rgba(0,0,0,.15);box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .q-option.selected{background:#111;border-color:#111;color:#fff;box-shadow:0 10px 24px rgba(0,0,0,.18);transform:scale(.985);animation:pop .28s ease}
+  .q-letter{width:36px;height:36px;border-radius:9999px;border:1.5px solid rgba(0,0,0,.15);display:grid;place-items:center;flex-shrink:0;font-weight:900;font-size:12px;color:rgba(0,0,0,.35)}
+  .q-option.selected .q-letter{background:var(--orange);border-color:var(--orange);color:#fff}
+  .q-opt-text{font-size:14.5px;font-weight:600;line-height:1.3;padding-right:8px;color:#222}
+  .q-option.selected .q-opt-text{color:#fff}
+  .q-check{margin-left:auto;color:#fff;font-size:14px;font-weight:900}
+  .q-footer{margin-top:auto;padding-top:40px;display:flex;justify-content:space-between;align-items:center}
+  .q-back{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,0,0,.4);background:none;border:none;padding:4px 8px;border-radius:9999px;cursor:pointer}
+  .q-back:hover{color:rgba(0,0,0,.7);background:rgba(0,0,0,.05)}
+  .q-count{font-size:11px;font-weight:500;color:rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+
+  /* Resultado */
+  .result-wrap{flex:1;display:flex;flex-direction:column;animation:slideUp .5s ease;position:relative;overflow-x:clip}
+  .confetti{pointer-events:none;position:absolute;inset:0;overflow:hidden;z-index:20}
+  .confetti-piece{position:absolute;width:8px;height:20px;border-radius:4px;top:-20px}
+  .res-head{padding:28px 24px 8px}
+  .res-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(66,133,244,.1);border:1px solid rgba(66,133,244,.2);color:var(--orange);font-size:11px;font-weight:900;letter-spacing:.1em;padding:6px 12px;border-radius:9999px;text-transform:uppercase}
+  
+  .res-h2{font-family:'Inter',sans-serif; font-weight:900; font-size:clamp(24px, 6vw, 30px);line-height:1.2;text-transform:uppercase;margin:16px 0 0;letter-spacing:-0.02em;}
+  .res-h2 .sub{font-size:clamp(18px, 5vw, 22px); display:block; margin-top:8px; font-weight:800;}
+  
+  .res-card{margin-top:24px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:20px;box-shadow:0 8px 28px rgba(0,0,0,.06)}
+  .res-card p{margin:0;font-size:14.5px;line-height:1.55;color:#222;font-weight:500}
+  .res-card b{font-weight:700}
+
+  .social-hook-section{margin:24px 24px 0; padding:20px; background:#111; border-radius:16px; position:relative; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+  .social-hook-section::before{content:""; position:absolute; top:-50px; right:-50px; width:120px; height:120px; background:var(--green); filter:blur(40px); opacity:0.3;}
+  .social-hook-text{position:relative; margin:0; font-family:'Inter',sans-serif; font-weight:900; font-size:18px; line-height:1.3; color:#fff; text-transform:uppercase; text-align:center; letter-spacing:0.01em;}
+  .social-hook-text .highlight{color:var(--yellow); display:inline-block;}
+
+  .tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:12px;color:#fff}
+  .tag-black{background:#111}
+  .tag-green{background:var(--green)}
+  .tag-orange{background:var(--orange)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+  .stat{border-radius:16px;padding:12px;text-align:center}
+  .stat-num{font-size:20px;font-weight:900;line-height:1}
+  .stat-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,0,0,.5);margin-top:6px;line-height:1.2}
+  .stat.s1{background:#eaf1ff;border:1px solid rgba(66,133,244,.15)}
+  .stat.s1 .stat-num{color:var(--orange)}
+  .stat.s2{background:#e8f5ee;border:1px solid rgba(52,168,83,.15)}
+  .stat.s2 .stat-num{color:var(--green)}
+  .stat.s3{background:#111}
+  .stat.s3 .stat-num{color:#fff}
+  .stat.s3 .stat-label{color:rgba(255,255,255,.6)}
+
+  /* Oferta e PDF */
+  .pdf-box{margin:24px 24px 0}
+  .pdf-dark{background:#111;color:#fff;border-radius:16px;padding:24px;position:relative;overflow:hidden}
+  .pdf-dark::before{content:"";position:absolute;right:0;top:0;width:180px;height:180px;background:var(--orange);border-radius:9999px;filter:blur(50px);opacity:.25}
+  .pdf-h3{position:relative;font-family:'Inter',sans-serif; font-weight:900; font-size:20px;line-height:1.1;text-transform:uppercase;margin:0}
+  .pdf-h3 .orange{color:var(--orange)}
+  .pdf-list{position:relative;margin-top:20px;display:flex;flex-direction:column;gap:12px}
+  .pdf-item{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 16px}
+  .pdf-check{width:28px;height:28px;border-radius:9999px;background:var(--green);display:grid;place-items:center;font-weight:900;font-size:11px;flex-shrink:0;margin-top:2px}
+  .pdf-item span{font-size:13px;line-height:1.4;font-weight:500;color:rgba(255,255,255,.9)}
+
+  .offer-wrap{margin:24px 24px 0}
+  .offer-card{background:#fff;border:1.5px solid var(--green);border-radius:16px;padding:20px;box-shadow:0 12px 36px rgba(52,168,83,.12)}
+  .offer-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .offer-badge{background:var(--orange);color:#fff;font-size:10px;font-weight:900;letter-spacing:.1em;padding:6px 12px;border-radius:9999px;text-transform:uppercase;animation:shake 2.5s infinite}
+  .offer-timer{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700}
+  .timer-dot{width:8px;height:8px;background:#ef4444;border-radius:9999px;animation:pulse 2s infinite}
+  .timer-label{color:rgba(0,0,0,.6);letter-spacing:.1em;text-transform:uppercase}
+  .timer-val{background:#000;color:#fff;padding:4px 10px;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .offer-price{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:20px}
+  .price-old{font-size:15px;font-weight:700;color:rgba(0,0,0,.3);text-decoration:line-through}
+  .price-new{font-size:40px;font-weight:900;line-height:1;color:var(--green);letter-spacing:-.025em}
+  .price-note{font-size:12.5px;font-weight:700;color:rgba(0,0,0,.6);line-height:1.1;padding-bottom:6px}
+  .price-sub{margin-top:6px;font-size:11px;font-weight:600;color:rgba(0,0,0,.5)}
+  .btn-checkout{display:block;margin-top:24px;width:100%;background:var(--green);color:#fff;font-weight:900;font-size:16px;padding:18px;border-radius:16px;text-transform:uppercase;letter-spacing:.025em;box-shadow:0 10px 24px rgba(52,168,83,.32);text-align:center;text-decoration:none;transition:all .15s}
+  .btn-checkout:active{transform:translateY(2px)}
+  .btn-checkout-alt{display:block;margin-top:12px;width:100%;background:#111;color:#fff;font-weight:700;font-size:13px;padding:13px;border-radius:16px;text-transform:uppercase;letter-spacing:.1em;text-align:center;text-decoration:none}
+  .offer-secure{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(0,0,0,.4);flex-wrap:wrap}
+  .btn-share{margin:20px 24px 0;width:calc(100% - 48px);background:#fff;border:1.5px solid rgba(0,0,0,.1);color:#000;font-weight:700;font-size:12px;padding:14px;border-radius:16px;text-transform:uppercase;letter-spacing:.12em;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .15s;font-family:inherit}
+  .btn-share:hover{background:#000;color:#fff}
+
+  .disclaimer{margin:32px 24px 0;border-top:1px solid rgba(0,0,0,.1);padding:20px 0 32px}
+  .disclaimer p{margin:0;font-size:11px;line-height:1.55;color:rgba(0,0,0,.55);text-align:center;background:rgba(255,255,255,.6);border-radius:12px;padding:16px;border:1px solid rgba(0,0,0,.04)}
+  .disclaimer b{color:rgba(0,0,0,.7)}
+
+  .app-footer{margin-top:auto;border-top:1px solid rgba(0,0,0,.05);background:rgba(255,255,255,.7);backdrop-filter:blur(8px);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+  .app-footer span{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.35)}
+
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+  @keyframes pop{0%{transform:scale(.97)}50%{transform:scale(1.015)}100%{transform:scale(1)}}
+  @keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @keyframes confettiFall{0%{transform:translateY(-20vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(680deg);opacity:0}}
+  @keyframes pulse{50%{opacity:.5}}
+</style>
+</head>
+<body>
+<div id="root">
+  <noscript style="display:block;padding:20px;font-family:sans-serif;text-align:center">
+    <h2>Ative o JavaScript para ver o quiz</h2>
+  </noscript>
+</div>
+
+<script>
+(function(){
+  if (typeof React === "undefined" || typeof ReactDOM === "undefined") {
+    document.getElementById("root").innerHTML = '<div style="padding:24px;font-family:sans-serif;color:#b00020;text-align:center"><h2>Erro: bibliotecas não carregaram</h2><p>Verifique sua conexão com a internet e recarregue a página.</p></div>';
+    return;
+  }
+
+  const h = React.createElement;
+  const { useState, useEffect, useRef } = React;
+
+  const BLUE = "#4285F4";
+  const GREEN = "#34A853";
+  const CHECKOUT_URL = "https://pay.kiwify.com.br/9xxAvtT";
+
+  const QUESTIONS = [
+    { id:1, title:"Por que você quer anunciar no Google?", options:["Quero vender todos os dias","Preciso de clientes previsíveis","Meu negócio está parado","Quero escalar o que já funciona"] },
+    { id:2, title:"Hoje, como as pessoas chegam até você?", subtitle:"Escolha a situação mais parecida", options:["Só por indicação","Só pelas redes sociais","Ninguém chega, está difícil","Já tenho algum tráfego, quero mais"] },
+    { id:3, title:"O que mais te trava para começar?", options:["Não sei escolher palavras-chave","Tenho medo de gastar e não vender","Não entendo os lances","Já tentei e não funcionou"] },
+    { id:4, title:"Sobre sua página de vendas hoje:", options:["Ainda não tenho","Tenho, mas não converte","Tenho e funciona razoavelmente","Tenho uma landing page otimizada"] },
+    { id:5, title:"Qual seu orçamento mensal para testar?", options:["Até R$ 300","R$ 300 a R$ 600","R$ 600 a R$ 1.500","Acima de R$ 1.500"] },
+    { id:6, title:"Se em 30 dias você tivesse o primeiro lucro, o que mudaria?", options:["Minha confiança em anunciar","Minha previsibilidade de vendas","Meu negócio sairia do vermelho","Eu escalaria para outros canais"] },
+  ];
+
+  function App() {
+    const [step, setStep] = useState(0);
+    const [answers, setAnswers] = useState([]);
+    const [selected, setSelected] = useState(null);
+    const [showConfetti, setShowConfetti] = useState(false);
+    const [timer, setTimer] = useState(600);
+    const audioCtxRef = useRef(null);
+
+    const progress = step === 0 ? 5 : step >= 1 && step <= 6 ? (step / 7) * 100 : 100;
+
+    useEffect(() => {
+      if (step === 7) {
+        setShowConfetti(true);
+        const t = setTimeout(() => setShowConfetti(false), 4000);
+        return () => clearTimeout(t);
+      }
+    }, [step]);
+
+    useEffect(() => {
+      if (step !== 7) return;
+      const i = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 0)), 1000);
+      return () => clearInterval(i);
+    }, [step]);
+
+    const beep = () => {
+      try {
+        if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = audioCtxRef.current;
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.frequency.value = 880; o.type = "sine";
+        g.gain.setValueAtTime(0.0001, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.14);
+        o.connect(g).connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.15);
+      } catch(e){}
+    };
+
+    const selectAnswer = (value) => {
+      beep(); setSelected(value);
+      setTimeout(() => {
+        setAnswers((prev) => prev.filter((a) => a.q !== step).concat([{ q: step, value }]));
+        setSelected(null);
+        if (step < 6) {
+          setStep(step + 1);
+        } else {
+          setStep(7);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }, 260);
+    };
+
+    const minutes = Math.floor(timer / 60), seconds = timer % 60;
+
+    const progressBar = h("div", { className: "progress-bar" },
+      h("div", { className: "progress-track" }, h("div", { className: "progress-fill", style: { width: progress + "%" } })),
+      h("div", { className: "progress-meta" },
+        h("span", { className: "progress-label" }, step === 0 ? "INÍCIO" : step <= 6 ? "PERGUNTA " + step + " / 6" : "SEU RESULTADO"),
+        h("span", { className: "progress-pct" }, Math.round(progress) + "%")
+      )
+    );
+
+    /* HERO PROSPECTIVO COM TIPOGRAFIA LIMPA */
+    const hero = h("div", { className: "hero-section", style:{display: step === 0 ? "flex" : "none"} },
+      h("div", { className: "hero-overlay" }),
+      h("div", { className: "hero-content" },
+        h("h1", { className: "hero-title" },
+          h("span", { className: "line1" }, "TRANSFORME CLIQUES EM"),
+          h("span", { className: "line2" }, "MÁQUINA DE VENDAS")
+        ),
+        h("div", { className: "hero-card" },
+          h("p", null, "Enquanto outros dependem da sorte, você pode ", h("span", { className: "hl-orange" }, "virar o jogo"), " e ver o dinheiro cair na conta todos os dias usando ", h("span", { className: "hl-underline" }, "Google Ads."))
+        ),
+        h("div", { className: "benefits" },
+          h("div", { className: "benefit" }, h("div", { className: "benefit-check" }, "✓"), h("p", { className: "benefit-text" }, "Vendas todos os dias no piloto automático")),
+          h("div", { className: "benefit" }, h("div", { className: "benefit-check" }, "✓"), h("p", { className: "benefit-text" }, "Pare de depender de indicação e redes sociais"))
+        ),
+        h("button", { className: "btn-primary", onClick: () => { beep(); setStep(1); window.scrollTo({ top: 0, behavior: "smooth" }); } }, "QUERO DESCOBRIR MEU POTENCIAL AGORA →"),
+        h("div", { className: "pulse-row" }, h("span", { className: "dot-green" }), h("p", { className: "pulse-text" }, "Quiz • 1 min • resultado personalizado"))
+      )
+    );
+
+    let questions = null;
+    if (step >= 1 && step <= 6) {
+      const q = QUESTIONS[step - 1];
+      const opts = q.options.map((opt, i) => {
+        const isSel = selected === opt;
+        return h("button", { key: i, onClick: () => selectAnswer(opt), className: "q-option" + (isSel ? " selected" : "") },
+          h("div", { className: "q-letter" }, String.fromCharCode(65 + i)),
+          h("span", { className: "q-opt-text" }, opt),
+          isSel ? h("span", { className: "q-check" }, "✓") : null
+        );
+      });
+      questions = h("div", { className: "q-wrap" },
+        h("div", { className: "q-meta" },
+          h("span", { className: "q-badge" }, step + "/6"),
+          h("span", { className: "q-topic" }, step <= 2 ? "Intenção & Busca" : step <= 4 ? "Estrutura & Medo" : "Sua Virada")
+        ),
+        h("h2", { className: "q-title" }, q.title),
+        q.subtitle ? h("p", { className: "q-subtitle" }, q.subtitle) : null,
+        h("div", { className: "q-options" }, opts),
+        h("div", { className: "q-footer" },
+          h("button", { className: "q-back", onClick: () => { if (step === 1) window.scrollTo({ top: 0, behavior: "smooth" }); setStep(Math.max(0, step - 1)); setSelected(null); } }, "← Voltar"),
+          h("span", { className: "q-count" }, answers.length + " respostas • faltam " + (6 - step + 1))
+        )
+      );
+    }
+
+    let result = null;
+    if (step === 7) {
+      const firstName = "Amigo(a)"; 
+      
+      const confetti = showConfetti ? h("div", { className: "confetti" },
+        Array.from({ length: 28 }).map((_, i) => h("div", { key: i, className: "confetti-piece", style: {
+          left: ((i * 3.7) % 100) + "%",
+          background: i % 3 === 0 ? BLUE : i % 3 === 1 ? GREEN : "#111",
+          animation: "confettiFall " + (1.2 + (i % 5) * 0.15) + "s ease-in forwards",
+          animationDelay: ((i % 7) * 0.08) + "s",
+          transform: "rotate(" + ((i * 37) % 360) + "deg)"
+        }}))
+      ) : null;
+
+      const pdfItems = [
+        "Como escolher palavras-chave que realmente trazem compradores",
+        "Estrutura de campanha de Pesquisa passo a passo",
+        "Como definir orçamento e lances sem medo",
+        "Checklist da página de destino que converte",
+        "Métricas essenciais: CTR, CPC, CPA e ROAS na prática"
+      ].map((item, i) => h("div", { key: i, className: "pdf-item" }, h("div", { className: "pdf-check" }, "✓"), h("span", null, item)));
+
+      result = h("div", { className: "result-wrap" },
+        confetti,
+        h("div", { className: "res-head" },
+          h("div", { className: "res-badge" }, "Perfil baseado nas suas respostas"),
+          h("h2", { className: "res-h2" },
+            h("span", { className: "c-black" }, firstName + ", você quer previsibilidade, "),
+            h("span", { className: "c-orange" }, "e o Google pode ser seu canal. "),
+            h("span", { className: "c-black sub" }, "É possível começar com método.")
+          ),
+          h("div", { className: "res-card" },
+            h("p", null,
+              "Pelas suas respostas, você busca ", h("span", { className: "tag tag-black" }, "vendas"), ", ", h("span", { className: "tag tag-green" }, "previsibilidade"), " e ", h("span", { className: "tag tag-orange" }, "segurança"), " para investir. Isso não é falta de capacidade — é falta de um caminho claro.",
+              h("br"), h("br"),
+              "Foi por isso que criamos o método ", h("b", null, "GOOGLE ADS DO ZERO AO PRIMEIRO LUCRO"), ": um passo a passo para configurar, medir e otimizar sua campanha de Pesquisa sem depender de tentativa e erro."
+            ),
+            h("div", { className: "stats" },
+              h("div", { className: "stat s1" }, h("div", { className: "stat-num" }, answers.length), h("div", { className: "stat-label" }, "Respostas analisadas")),
+              h("div", { className: "stat s2" }, h("div", { className: "stat-num" }, "30 dias"), h("div", { className: "stat-label" }, "Plano focado")),
+              h("div", { className: "stat s3" }, h("div", { className: "stat-num" }, "100%"), h("div", { className: "stat-label" }, "Passo a passo"))
+            )
+          )
+        ),
+        
+        /* BLOCO DE PROVA SOCIAL / QUEBRA DE OBJEÇÃO */
+        h("div", { className: "social-hook-section" },
+          h("p", { className: "social-hook-text" }, 
+            "Enquanto você tá sofrendo pra vender, tem pessoas ", 
+            h("span", { className: "highlight" }, "lucrando"),
+            " com isso"
+          )
+        ),
+
+        h("div", { className: "pdf-box" },
+          h("div", { className: "pdf-dark" },
+            h("h3", { className: "pdf-h3" }, "O que você vai receber dentro do ", h("span", { className: "orange" }, "PDF:")),
+            h("div", { className: "pdf-list" }, pdfItems)
+          )
+        ),
+        h("div", { className: "offer-wrap" },
+          h("div", { className: "offer-card" },
+            h("div", { className: "offer-head" },
+              h("span", { className: "offer-badge" }, "Oferta liberada agora"),
+              h("div", { className: "offer-timer" },
+                h("span", { className: "timer-dot" }),
+                h("span", { className: "timer-label" }, "Expira em"),
+                h("span", { className: "timer-val" }, String(minutes).padStart(2,"0") + ":" + String(seconds).padStart(2,"0"))
+              )
+            ),
+            h("div", { className: "offer-price" },
+              h("span", { className: "price-old" }, "De R$90,00"),
+              h("span", { className: "price-new" }, "R$9,00"),
+              h("span", { className: "price-note" }, "hoje", h("br"), "à vista")
+            ),
+            h("p", { className: "price-sub" }, "Economia de R$81 • Acesso imediato ao PDF"),
+            h("a", { href: CHECKOUT_URL, target: "_blank", rel: "noopener noreferrer", onClick: beep, className: "btn-checkout" }, "QUERO COMEÇAR MEUS 30 DIAS AGORA"),
+            h("a", { href: CHECKOUT_URL, target: "_blank", rel: "noopener noreferrer", className: "btn-checkout-alt" }, "Garantir meu e-book por R$9,00 →"),
+            h("div", { className: "offer-secure" }, h("span", null, "🛡️ Garantia 7 dias"), h("span", null, "•"), h("span", null, "⚡ Acesso imediato"))
+          ),
+          h("button", { className: "btn-share", onClick: () => {
+            const msg = "Acabei de descobrir meu perfil no quiz GOOGLE ADS DO ZERO AO PRIMEIRO LUCRO! Estou dando um passo para vender com método. Bora fazer o quiz?";
+            window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+          }}, h("span", null, "↗"), " Compartilhar no WhatsApp: Acabei de descobrir meu perfil!")
+        ),
+        h("div", { className: "disclaimer" },
+          h("p", null,
+            h("b", null, "Aviso importante:"),
+            " Conteúdo educativo sobre publicidade. Resultados variam de pessoa para pessoa e dependem de oferta, página, orçamento, mercado e mensuração. Não é promessa de resultado garantido. Não substitui orientação profissional. ",
+            h("b", null, "Resultados variam."),
+            h("br"), h("br"),
+            "© " + new Date().getFullYear() + " Método Google Ads do Zero ao Primeiro Lucro. Todos os direitos reservados."
+          )
+        )
+      );
+    }
+
+    const footer = h("div", { className: "app-footer" },
+      h("span", null, "GOOGLE ADS • DO ZERO AO LUCRO"),
+      h("span", null, "Quiz")
+    );
+
+    return h("div", { className: "app-shell" },
+      h("div", { className: "app-card" }, progressBar, hero, questions, result, footer)
+    );
+  }
+
+  try {
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(h(React.StrictMode, null, h(App, null)));
+  } catch (err) {
+    console.error(err);
+    document.getElementById("root").innerHTML = '<div style="padding:24px;font-family:sans-serif;color:#b00020;text-align:center"><h2>Erro ao carregar o quiz</h2><pre style="text-align:left;font-size:12px;background:#f5f5f5;padding:12px;border-radius:8px;overflow:auto">' + String(err) + '</pre></div>';
+  }
+})();
+</script>
+</body>
+</html>
